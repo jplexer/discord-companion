@@ -1,0 +1,40 @@
+[
+    { 
+      "type": "heading", 
+      "defaultValue": "Discord Companion" 
+    }, 
+    { 
+      "type": "text", 
+      "defaultValue": "You need to have the Discord Companion running on your Desktop. You can find it at github.com/jplexer/discord-companion" 
+    },
+    { 
+      "type": "section", 
+      "items": [
+        { 
+          "type": "heading", 
+          "defaultValue": "Settings" 
+        },
+        { 
+          "type": "input", 
+          "messageKey": "WS_HOST", 
+          "label": "Websocket Host (shown in the Discord Companion)", 
+          "attributes": {
+              "placeholder": "IP" 
+          }
+        },
+        { 
+          "type": "input", 
+          "messageKey": "WS_PORT", 
+          "label": "Websocket Port (shown in the Discord Companion)", 
+          "defaultValue": "5983", 
+          "attributes": {
+            "placeholder": "5983" 
+          } 
+        }
+      ] 
+    },
+    { 
+      "type": "submit", 
+      "defaultValue": "Save" 
+    }
+  ]

@@ -1,0 +1,69 @@
+{
+  "name": "discord-companion",
+  "author": "JPlexer",
+  "version": "1.0.0",
+  "keywords": [
+    "pebble-app"
+  ],
+  "private": true,
+  "dependencies": {
+    "pebble-clay": "^1.0.4"
+  },
+  "pebble": {
+    "displayName": "Discord Companion",
+    "uuid": "361978cd-f0d7-421d-9643-dc5c5525fb21",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "aplite",
+      "basalt",
+      "chalk",
+      "diorite"
+    ],
+    "watchapp": {
+      "watchface": false
+    },
+    "messageKeys": [
+      "TOGGLE_MUTE",
+      "TOGGLE_DEAFEN",
+      "MUTE_STATE",
+      "DEAFEN_STATE",
+      "VOICE_CHANNEL_NAME",
+      "VOICE_USER_COUNT",
+      "VOICE_TOPIC",
+      "REQUEST_VOICE_INFO",
+      "WS_HOST",
+      "WS_PORT"
+    ],
+    "resources": {
+      "media": [
+        {
+          "type": "raw",
+          "menuIcon": true,
+          "name": "ICON",
+          "file": "images/discord.pdc"
+        },
+        {
+          "type": "png",
+          "name": "MUTE_OFF_ICON",
+          "file": "images/unmuted.png"
+        },
+        {
+          "type": "png",
+          "name": "MUTE_ON_ICON",
+          "file": "images/muted.png"
+        },
+        {
+          "type": "png",
+          "name": "DEAFEN_OFF_ICON",
+          "file": "images/undeafened.png"
+        },
+        {
+          "type": "png",
+          "name": "DEAFEN_ON_ICON",
+          "file": "images/deafened.png"
+        }
+      ]
+    }
+  }
+}
