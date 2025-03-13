@@ -35,3 +35,6 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 build/
 .vscode/
+
+# pebble specific
+.lock-waf_linux_build

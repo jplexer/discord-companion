@@ -46,22 +46,22 @@
         {
           "type": "png",
           "name": "MUTE_OFF_ICON",
-          "file": "images/unmuted.png"
+          "file": "images/btn_mute.png"
         },
         {
           "type": "png",
           "name": "MUTE_ON_ICON",
-          "file": "images/muted.png"
+          "file": "images/btn_is_muted.png"
         },
         {
           "type": "png",
           "name": "DEAFEN_OFF_ICON",
-          "file": "images/undeafened.png"
+          "file": "images/btn_deafen.png"
         },
         {
           "type": "png",
           "name": "DEAFEN_ON_ICON",
-          "file": "images/deafened.png"
+          "file": "images/btn_is_deafened.png"
         }
       ]
     }
