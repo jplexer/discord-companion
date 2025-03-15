@@ -48,6 +48,7 @@ jobs:
           echo "[Desktop Entry]
           Name=Pebble Companion
           Exec=PebbleCompanion
+          Icon=pebble-companion
           Type=Application
           Categories=Utility;" > AppDir/usr/share/applications/pebble-companion.desktop
 
