@@ -26,7 +26,7 @@ jobs:
         run: dotnet build desktop/desktop.sln --configuration Release
 
       - name: Publish
-        run: dotnet publish desktop/Pebble\ Companion.csproj --configuration Release --output ./output
+        run: dotnet publish "desktop/Pebble Companion.csproj" --configuration Release --output ./output
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
