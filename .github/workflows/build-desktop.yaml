@@ -2,9 +2,9 @@ name: Build and Release Desktop App
 
 on:
   push:
-    branches:
-      - main
-      - stable
+    paths:
+      - 'desktop/**'
+      - '.github/workflows/build-desktop.yaml'
 
 jobs:
   build:

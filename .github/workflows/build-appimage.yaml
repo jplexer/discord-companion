@@ -2,9 +2,9 @@ name: Build AppImage
 
 on:
   push:
-    branches:
-      - main
-      - stable
+    paths:
+      - 'desktop/**'
+      - '.github/workflows/build-appimage.yaml'
 
 jobs:
   build-appimage:
@@ -48,7 +48,12 @@ jobs:
           echo "[Desktop Entry]
           Name=Pebble Companion
           Exec=PebbleCompanion
-          Icon=pebble-companion
+          Type=Application
+          Categories=Utility;" > AppDir/usr/share/applications/pebble-companion.desktop
+                
+          # Also symlink the desktop file to AppDir root as required by appimagetool
+          ln -sf usr/share/applications/pebble-companion.desktop AppDir/pebble-companion.desktop
+          
           Type=Application
           Categories=Utility;" > AppDir/usr/share/applications/pebble-companion.desktop
           
