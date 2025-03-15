@@ -57,7 +57,7 @@ jobs:
           
           # Copy icon (adjust path if your icon is elsewhere)
           # For now using a placeholder command - replace with actual icon path
-          cp desktop/Assets/Discord_Pbl.png AppDir/usr/share/icons/hicolor/256x256/apps/pebble-companion.png || echo "Icon not found, continuing without it"
+          cp desktop/Assets/Discord_Pbl.png AppDir/pebble-companion.png || echo "Icon not found, continuing without it"
           
           # Create AppRun
           echo '#!/bin/sh
