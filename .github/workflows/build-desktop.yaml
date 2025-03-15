@@ -1,0 +1,36 @@
+name: Build and Release Desktop App
+
+on:
+  push:
+    branches:
+      - main
+      - stable
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore desktop/desktop.sln
+
+      - name: Build
+        run: dotnet build desktop/desktop.sln --configuration Release
+
+      - name: Publish
+        run: dotnet publish desktop/Pebble\ Companion.csproj --configuration Release --output ./output
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+            name: pebble-companion-desktop
+            path: ./output
+            retention-days: 30
