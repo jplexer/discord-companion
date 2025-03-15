@@ -1,7 +1,7 @@
 {
   "name": "discord-companion",
   "author": "JPlexer",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "keywords": [
     "pebble-app"
   ],
@@ -10,7 +10,7 @@
     "pebble-clay": "^1.0.4"
   },
   "pebble": {
-    "displayName": "Discord Companion",
+    "displayName": "Discord Call",
     "uuid": "361978cd-f0d7-421d-9643-dc5c5525fb21",
     "sdkVersion": "3",
     "enableMultiJS": true,
@@ -30,7 +30,8 @@
       "DEAFEN_STATE",
       "VOICE_CHANNEL_NAME",
       "VOICE_USER_COUNT",
-      "VOICE_TOPIC",
+      "CONNECTION_STATUS",
+      "LEAVE_CHANNEL",
       "REQUEST_VOICE_INFO",
       "WS_HOST",
       "WS_PORT"
@@ -41,7 +42,12 @@
           "type": "raw",
           "menuIcon": true,
           "name": "ICON",
-          "file": "images/discord.pdc"
+          "file": "images/discord_menu.pdc"
+        },
+        {
+          "type": "raw",
+          "name": "DISCORD_50",
+          "file": "images/50px_discord.pdc"
         },
         {
           "type": "png",
@@ -62,6 +68,11 @@
           "type": "png",
           "name": "DEAFEN_ON_ICON",
           "file": "images/btn_is_deafened.png"
+        },
+        {
+          "type": "png",
+          "name": "DISMISS_ICON",
+          "file": "images/btn_dismiss.png"
         }
       ]
     }
