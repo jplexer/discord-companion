@@ -50,12 +50,9 @@ jobs:
           Exec=PebbleCompanion
           Type=Application
           Categories=Utility;" > AppDir/usr/share/applications/pebble-companion.desktop
-                
+
           # Also symlink the desktop file to AppDir root as required by appimagetool
           ln -sf usr/share/applications/pebble-companion.desktop AppDir/pebble-companion.desktop
-          
-          Type=Application
-          Categories=Utility;" > AppDir/usr/share/applications/pebble-companion.desktop
           
           # Copy icon (adjust path if your icon is elsewhere)
           # For now using a placeholder command - replace with actual icon path
