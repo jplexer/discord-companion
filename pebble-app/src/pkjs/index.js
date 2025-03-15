@@ -16,6 +16,7 @@ Pebble.addEventListener("ready",
             // the user will need to configure the app
             
             // Send disconnected status to show loading screen
+            console.log("No WebSocket host configured, sending disconnected status to Pebble");
             sendConnectionStatus(false);
             return;
         }
@@ -30,6 +31,31 @@ Pebble.addEventListener("ready",
         initWebSocket();
     }
 );
+
+Pebble.addEventListener("showConfiguration", function(e) {
+    var url = clay.generateUrl();
+    Pebble.openURL(url);
+  });
+  
+  Pebble.addEventListener('webviewclosed', function(e) {
+    if (e && !e.response) {
+      return;
+    }
+  
+    // Get the keys and values from each config item
+    var dict = clay.getSettings(e.response);
+    wsHost = dict[keys.WS_HOST];
+    localStorage.setItem("WS_HOST", wsHost);
+    websocketHost = wsHost;
+    wsPort = dict[keys.WS_PORT];
+    websocketPort = wsPort;
+    localStorage.setItem("WS_PORT", wsPort);
+    websocketUrl = "ws://" + websocketHost + ":" + websocketPort;
+    if (!initialized) {
+      initialized = true;
+      initWebSocket();
+    }
+  });
 
 // Function to send connection status to Pebble
 function sendConnectionStatus(isConnected) {
