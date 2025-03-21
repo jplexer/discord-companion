@@ -1,5 +1,6 @@
 # Discord Companion Desktop Server
 
+### NOTE: This is the original hackathon version of discord companion. Checkout the main branch for a newer version (you have to compile the Pebble App yourself)
 This README explains how to set up and run the Discord companion WebSocket server that enables control of Discord voice settings from a Pebble smartwatch application.
 
 ## Prerequisites
