@@ -484,6 +484,8 @@ static void window_load(Window *window) {
     status_bar_layer_set_colors(s_status_bar, GColorWhite, GColorBlack);
   #endif
   status_bar_layer_set_separator_mode(s_status_bar, StatusBarLayerSeparatorModeNone);
+  GRect status_bar_frame = GRect(0, 0, bounds.size.w - ACTION_BAR_WIDTH, STATUS_BAR_LAYER_HEIGHT);
+  layer_set_frame(status_bar_layer_get_layer(s_status_bar), status_bar_frame);
   layer_add_child(window_layer, status_bar_layer_get_layer(s_status_bar));
   
   // Get status bar height
