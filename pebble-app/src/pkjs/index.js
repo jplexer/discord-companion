@@ -11,6 +11,7 @@ Pebble.addEventListener("ready",
     function(e) {
         var tempHost = localStorage.getItem("WS_HOST");
         var tempPort = localStorage.getItem("WS_PORT");
+        tempHost = "192.168.0.231"; //override for testing
         if (!tempHost) {
             // we cant run in this state, so we need to exit
             // the user will need to configure the app
@@ -161,6 +162,7 @@ function handleMessageData(data) {
                 sendStateToPebble({
                     VOICE_CHANNEL_NAME: jsonData.channelName,
                     VOICE_USER_COUNT: jsonData.users,
+                    VOICE_SERVER_NAME: jsonData.serverName,
                     MUTE_STATE: jsonData.mute ? 1 : 0,
                     DEAFEN_STATE: jsonData.deaf ? 1 : 0
                 });
@@ -180,6 +182,11 @@ function handleMessageData(data) {
                 sendStateToPebble({
                     VOICE_CHANNEL_NAME: jsonData.channelName,
                     VOICE_USER_COUNT: jsonData.userNumber
+                });
+                break;
+            case "SERVER_NAME_UPDATE":
+                sendStateToPebble({
+                    VOICE_SERVER_NAME: jsonData.serverName
                 });
                 break;
             case "LEFT_CHANNEL":

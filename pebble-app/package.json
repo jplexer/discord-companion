@@ -30,6 +30,7 @@
       "DEAFEN_STATE",
       "VOICE_CHANNEL_NAME",
       "VOICE_USER_COUNT",
+      "VOICE_SERVER_NAME",
       "CONNECTION_STATUS",
       "LEAVE_CHANNEL",
       "REQUEST_VOICE_INFO",
@@ -48,6 +49,21 @@
           "type": "raw",
           "name": "DISCORD_50",
           "file": "images/50px_discord.pdc"
+        },
+        {
+          "type": "raw",
+          "name": "STATUS_MUTED",
+          "file": "images/status_muted.pdc"
+        },
+        {
+          "type": "raw",
+          "name": "STATUS_DEAFENED",
+          "file": "images/status_deafened.pdc"
+        },
+        {
+          "type": "raw",
+          "name": "QUESTION_MARK",
+          "file": "images/question_mark.pdc"
         },
         {
           "type": "png",
@@ -73,6 +89,11 @@
           "type": "png",
           "name": "DISMISS_ICON",
           "file": "images/btn_dismiss.png"
+        },
+        {
+          "type": "png",
+          "name": "CONFIRM_ICON",
+          "file": "images/btn_confirm.png"
         }
       ]
     }

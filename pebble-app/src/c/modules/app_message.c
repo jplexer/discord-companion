@@ -11,6 +11,7 @@ static VoiceInfoCallback s_voice_info_callback = NULL;
 static ConnectionCallback s_connection_callback = NULL;
 
 // Voice info storage
+static char s_server_name[64] = "";
 static char s_voice_channel_name[64] = "";  // Change from "Loading..." to empty string
 static int s_voice_user_count = 0;
 
@@ -42,6 +43,7 @@ void inbox_received_callback(DictionaryIterator *iter, void *context) {
     if (!is_connected) {
       strcpy(s_voice_channel_name, "");
       s_voice_user_count = 0;
+      strcpy(s_server_name, "");
     }
   }
   
@@ -75,6 +77,13 @@ void inbox_received_callback(DictionaryIterator *iter, void *context) {
     APP_LOG(APP_LOG_LEVEL_INFO, "Received user count: %d", s_voice_user_count);
   }
   
+  Tuple *server_name_tuple = dict_find(iter, MESSAGE_KEY_VOICE_SERVER_NAME);
+  if(server_name_tuple) {
+    strncpy(s_server_name, server_name_tuple->value->cstring, sizeof(s_server_name) - 1);
+    voice_info_changed = true;
+    APP_LOG(APP_LOG_LEVEL_INFO, "Received server name: %s", s_server_name);
+  }
+  
   // Notify the UI if state changed and callback is registered
   if(state_changed && s_state_change_callback) {
     s_state_change_callback(s_is_muted, s_is_deafened);
@@ -83,7 +92,7 @@ void inbox_received_callback(DictionaryIterator *iter, void *context) {
   // Notify about voice info changes - check for any user count above 0
   if(voice_info_changed && s_voice_info_callback) {
     APP_LOG(APP_LOG_LEVEL_INFO, "Calling voice info callback");
-    s_voice_info_callback(s_voice_channel_name, s_voice_user_count, "");
+    s_voice_info_callback(s_voice_channel_name, s_voice_user_count, s_server_name);
   }
 }
   

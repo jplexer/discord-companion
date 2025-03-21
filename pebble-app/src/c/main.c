@@ -43,9 +43,6 @@ static void check_channel_status(void *data) {
     s_is_in_channel = window_reports_in_channel;
   }
   
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Status check: connected=%d, in_channel=%d, in_channel_window=%d, in_join_window=%d", 
-         s_is_connected, s_is_in_channel, in_channel_window, in_join_window);
-  
   // If state is inconsistent, fix it
   if (s_is_connected) {
     if (s_is_in_channel && !in_channel_window) {
@@ -73,7 +70,7 @@ static void check_channel_status(void *data) {
   app_timer_register(1000, check_channel_status, NULL);
 }
 
-static void voice_info_callback(const char* channel_name, int user_count, const char* topic) {
+static void voice_info_callback(const char* channel_name, int user_count, const char* server_name) {
   APP_LOG(APP_LOG_LEVEL_INFO, "Voice info received - Channel: '%s', Users: %d", 
           channel_name, user_count);
   
@@ -92,7 +89,7 @@ static void voice_info_callback(const char* channel_name, int user_count, const 
     s_is_in_channel = false;
     
     // Update UI immediately so it shows blank
-    main_window_update_voice_info(channel_name, user_count, topic);
+    main_window_update_voice_info(channel_name, user_count, server_name);
     
     // Cancel any existing timer and create a new one
     if (s_leave_timer) {
@@ -118,14 +115,14 @@ static void voice_info_callback(const char* channel_name, int user_count, const 
     main_window_push();
     
     // Explicitly update the main window
-    main_window_update_voice_info(channel_name, user_count, topic);
+    main_window_update_voice_info(channel_name, user_count, server_name);
     return;
   }
   
   // If no state change but we have updated data
   if (is_in_channel && s_is_connected) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating main window with latest voice info");
-    main_window_update_voice_info(channel_name, user_count, topic);
+    main_window_update_voice_info(channel_name, user_count, server_name);
   }
 }
 
