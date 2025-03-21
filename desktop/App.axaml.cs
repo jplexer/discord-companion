@@ -12,7 +12,7 @@ namespace Pebble_Companion;
 public partial class App : Application {
     public override void Initialize() {
         AvaloniaXamlLoader.Load(this);
-        RPC.Connect();
+        Rpc.Connect();
         
         // Use default port 5983 from PebbleWSServer
         int port = 5983;

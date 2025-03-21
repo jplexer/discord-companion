@@ -41,13 +41,18 @@ public class PebbleWSServer {
         await Instance.SendToAllAsync(message);
     }
 
-    public static async Task JoinedChannel(string channelName, int userNumber) {
+    public static async Task JoinedChannel(string? channelName, int userNumber) {
         var message = JsonSerializer.Serialize(new { cmd = "JOINED_CHANNEL", channelName, userNumber });
         await Instance.SendToAllAsync(message);
     }
 
     public static async Task UserVoiceStateUpdate(bool mute, bool deaf) {
         var message = JsonSerializer.Serialize(new { cmd = "USER_VOICE_STATE_UPDATE", mute, deaf });
+        await Instance.SendToAllAsync(message);
+    }
+    
+    public static async Task ServerNameUpdate(string? serverName) {
+        var message = JsonSerializer.Serialize(new { cmd = "SERVER_NAME_UPDATE", serverName });
         await Instance.SendToAllAsync(message);
     }
 
@@ -279,15 +284,15 @@ public class PebbleWSServer {
                         switch (message) {
                             case "mute":
                                 LogMessage("Processing mute command");
-                                await RPC.ToggleMute();
+                                await Rpc.ToggleMute();
                                 break;
                             case "deafen":
                                 LogMessage("Processing deafen command");
-                                await RPC.ToggleDeafen();
+                                await Rpc.ToggleDeafen();
                                 break;
                             case "getInitialState":
                                 LogMessage("Processing getInitialState command");
-                                var state = await RPC.GetInitialState();
+                                var state = await Rpc.GetInitialState();
                                 // Convert to JSON string
                                 var json = JsonSerializer.Serialize(state);
                                 var bfr = Encoding.UTF8.GetBytes(json);
@@ -299,7 +304,7 @@ public class PebbleWSServer {
                                 break;
                             case "leaveChannel":
                                 LogMessage("Processing leaveChannel command");
-                                await RPC.LeaveChannel();
+                                await Rpc.LeaveChannel();
                                 break;
                             default:
                                 LogMessage($"Unknown command: {message}");
