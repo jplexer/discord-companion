@@ -6,9 +6,22 @@ var websocketHost = "";
 var websocketPort = 5983;
 var websocketUrl = "ws://" + websocketHost + ":" + websocketPort;
 var initialized = false;
+var watchInfo = Pebble.getActiveWatchInfo();
 
 Pebble.addEventListener("ready",
     function(e) {
+        console.log("Watch Model: " + watchInfo.model);
+        if (watchInfo.model.startsWith("qemu")) {
+            console.log("Running in emulator, skipping WebSocket initialization");
+            sendStateToPebble({
+                VOICE_CHANNEL_NAME: "Fake Channel and some more characters",
+                VOICE_USER_COUNT: 42,
+                VOICE_SERVER_NAME: "qemu",
+                MUTE_STATE: 0,
+                DEAFEN_STATE: 0
+            });
+            return;
+        }
         var tempHost = localStorage.getItem("WS_HOST");
         var tempPort = localStorage.getItem("WS_PORT");
         //tempHost = "192.168.0.231"; //override for testing
@@ -239,7 +252,16 @@ Pebble.addEventListener("appmessage",
     }
 );
 
+var qemu_mute_state = 0;
 function sendMuteCommand() {
+    if (watchInfo.model.startsWith("qemu")) {
+        console.log("Running in emulator, skipping mute command");
+        sendStateToPebble({
+            MUTE_STATE: qemu_mute_state ? 0 : 1
+        });
+        qemu_mute_state = !qemu_mute_state;
+        return;
+    }
     if (socket && socket.readyState === WebSocket.OPEN) {
         console.log("Sending mute command to server");
         socket.send("mute");
@@ -248,7 +270,16 @@ function sendMuteCommand() {
     }
 }
 
+var qemu_deafen_state = 0;
 function sendDeafenCommand() {
+    if (watchInfo.model.startsWith("qemu")) {
+        console.log("Running in emulator, skipping deafen command");
+        sendStateToPebble({
+            DEAFEN_STATE: qemu_deafen_state ? 0 : 1
+        });
+        qemu_deafen_state = !qemu_deafen_state;
+        return;
+    }
     if (socket && socket.readyState === WebSocket.OPEN) {
         console.log("Sending deafen command to server");
         socket.send("deafen");
