@@ -19,7 +19,7 @@ static void window_load(Window *window) {
   GRect bounds = layer_get_bounds(window_layer);
 
   #ifdef PBL_COLOR
-    window_set_background_color(window, GColorLiberty);
+    window_set_background_color(window, GColorIndigo);
   #endif
   
   // Calculate dimensions for centered content

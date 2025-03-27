@@ -180,7 +180,7 @@ static void show_leave_confirmation(void) {
   });
   
   #ifdef PBL_COLOR
-    window_set_background_color(s_confirm_window, GColorLiberty);
+    window_set_background_color(s_confirm_window, GColorIndigo);
   #endif
   
   window_stack_push(s_confirm_window, true);
@@ -473,13 +473,13 @@ static void window_load(Window *window) {
   GRect bounds = layer_get_bounds(window_layer);
 
   #ifdef PBL_COLOR
-    window_set_background_color(window, GColorLiberty);
+    window_set_background_color(window, GColorIndigo);
   #endif
   
   // Create status bar
   s_status_bar = status_bar_layer_create();
   #ifdef PBL_COLOR
-    status_bar_layer_set_colors(s_status_bar, GColorLiberty, GColorWhite);
+    status_bar_layer_set_colors(s_status_bar, GColorIndigo, GColorWhite);
   #else
     status_bar_layer_set_colors(s_status_bar, GColorWhite, GColorBlack);
   #endif
