@@ -11,7 +11,7 @@ Pebble.addEventListener("ready",
     function(e) {
         var tempHost = localStorage.getItem("WS_HOST");
         var tempPort = localStorage.getItem("WS_PORT");
-        tempHost = "192.168.0.231"; //override for testing
+        //tempHost = "192.168.0.231"; //override for testing
         if (!tempHost) {
             // we cant run in this state, so we need to exit
             // the user will need to configure the app
