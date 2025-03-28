@@ -7,4 +7,14 @@
     <Application.Styles>
         <FluentTheme />
     </Application.Styles>
+             <Application.Resources>
+                 <TrayIcon x:Key="TrayIcon" Icon="/Assets/Discord_Pbl.png" ToolTipText="Pebble Companion">
+                     <TrayIcon.Menu>
+                         <NativeMenu>
+                             <NativeMenuItem Header="Show" />
+                             <NativeMenuItem Header="Exit" />
+                         </NativeMenu>
+                     </TrayIcon.Menu>
+                 </TrayIcon>
+             </Application.Resources>
 </Application>

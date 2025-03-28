@@ -5,8 +5,18 @@ using System.Linq;
 namespace Pebble_Companion;
 
 public partial class MainWindow : Window {
-    public MainWindow() {
+    public MainWindow()
+    {
         InitializeComponent();
+        this.Closing += MainWindow_Closing;
+    }
+    private void MainWindow_Closing(object sender, WindowClosingEventArgs e)
+    {
+        // Cancel the close operation
+        e.Cancel = true;
+        
+        // Hide the window instead
+        this.Hide();
     }
     
     public MainWindow(List<string> localIPs, int port) : this() {
@@ -56,6 +66,8 @@ public partial class MainWindow : Window {
         foreach (var ip in localIPs) {
             text += $"• {ip}\n";
         }
+        
+        text += "\nNote: You can close this window, the server will continue running in the background.";
         
         return text;
     }
