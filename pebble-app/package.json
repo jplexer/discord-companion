@@ -35,6 +35,7 @@
       "CONNECTION_STATUS",
       "LEAVE_CHANNEL",
       "REQUEST_VOICE_INFO",
+      "CONNECTION_TIMEOUT",
       "WS_HOST",
       "WS_PORT"
     ],

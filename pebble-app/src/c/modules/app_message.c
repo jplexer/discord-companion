@@ -1,5 +1,7 @@
 #include "app_message.h"
 #include <string.h>
+#include "../windows/error_window.h"
+#include "../windows/loading_window.h"
 
 // State tracking
 static bool s_is_muted = false;
@@ -32,6 +34,14 @@ void inbox_received_callback(DictionaryIterator *iter, void *context) {
   
   bool state_changed = false;
   bool voice_info_changed = false;
+
+  Tuple *timeout_tuple = dict_find(iter, MESSAGE_KEY_CONNECTION_TIMEOUT);
+  if (timeout_tuple) {
+    // Hide loading window and show error window
+    loading_window_pop();
+    error_window_push("Couldn't connect to host - did you set up Discord Companion on your PC?");
+    return;
+  }
   
   // Check for connection status first
   Tuple *connection_tuple = dict_find(iter, MESSAGE_KEY_CONNECTION_STATUS);

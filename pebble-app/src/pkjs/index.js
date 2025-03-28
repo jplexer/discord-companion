@@ -8,6 +8,10 @@ var websocketUrl = "ws://" + websocketHost + ":" + websocketPort;
 var initialized = false;
 var watchInfo = Pebble.getActiveWatchInfo();
 
+let connectionStartTime = 0;
+const MAX_RETRY_TIME = 10000; // 10 seconds in milliseconds
+let isRetrying = false;
+
 Pebble.addEventListener("ready",
     function(e) {
         console.log("Watch Model: " + watchInfo.model);
@@ -98,6 +102,28 @@ const lastSentValues = {
 };
 
 function initWebSocket() {
+    // Set connection start time when first attempting to connect
+    if (!isRetrying) {
+        connectionStartTime = Date.now();
+        isRetrying = true;
+    }
+    
+    // Check if we've exceeded retry time limit
+    if (Date.now() - connectionStartTime > MAX_RETRY_TIME) {
+        console.log("Exceeded maximum retry time of 10 seconds, stopping reconnection attempts");
+        isRetrying = false;
+        
+        // Send final disconnected status to Pebble
+        sendConnectionStatus(false);
+        
+        // Send a special message to indicate timeout (the watch app should show error window)
+        Pebble.sendAppMessage({
+            CONNECTION_TIMEOUT: 1
+        });
+        
+        return;
+    }
+    
     // Initial connection status - disconnected
     sendConnectionStatus(false);
     
@@ -109,6 +135,9 @@ function initWebSocket() {
         
         socket.onopen = function(e) {
             console.log("WebSocket connection established");
+            
+            // Reset retry flag since we're now connected
+            isRetrying = false;
             
             // Send connected status to Pebble
             sendConnectionStatus(true);
@@ -130,8 +159,21 @@ function initWebSocket() {
             // Send disconnected status to Pebble
             sendConnectionStatus(false);
             
-            // Attempt to reconnect after a delay
-            setTimeout(initWebSocket, 5000);
+            // Check if we should retry based on time
+            if (Date.now() - connectionStartTime <= MAX_RETRY_TIME) {
+                console.log("Retrying connection... Time elapsed: " + 
+                          (Date.now() - connectionStartTime) + "ms");
+                // Attempt to reconnect after a delay
+                setTimeout(initWebSocket, 2000);
+            } else {
+                console.log("Exceeded maximum retry time, stopping reconnection attempts");
+                isRetrying = false;
+                
+                // Send timeout message to Pebble
+                Pebble.sendAppMessage({
+                    CONNECTION_TIMEOUT: 1
+                });
+            }
         };
         
         socket.onerror = function(error) {
@@ -147,8 +189,21 @@ function initWebSocket() {
         // Send disconnected status to Pebble
         sendConnectionStatus(false);
         
-        // Attempt to reconnect after a delay
-        setTimeout(initWebSocket, 5000);
+        // Check if we should retry based on time
+        if (Date.now() - connectionStartTime <= MAX_RETRY_TIME) {
+            console.log("Retrying connection after error... Time elapsed: " + 
+                      (Date.now() - connectionStartTime) + "ms");
+            // Attempt to reconnect after a delay
+            setTimeout(initWebSocket, 2000);
+        } else {
+            console.log("Exceeded maximum retry time after error, stopping reconnection attempts");
+            isRetrying = false;
+            
+            // Send timeout message to Pebble
+            Pebble.sendAppMessage({
+                CONNECTION_TIMEOUT: 1
+            });
+        }
     }
 }
 
