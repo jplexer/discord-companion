@@ -44,7 +44,7 @@ static void window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
 
-  #ifdef PBL_COLOR
+  #if PBL_COLOR
     window_set_background_color(window, GColorIndigo);
   #endif
 
@@ -54,7 +54,7 @@ static void window_load(Window *window) {
   text_layer_set_font(s_loading_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
   text_layer_set_text(s_loading_text_layer, s_loading_text);
   
-  #ifdef PBL_COLOR
+  #if PBL_COLOR
     text_layer_set_text_color(s_loading_text_layer, GColorWhite);
     text_layer_set_background_color(s_loading_text_layer, GColorClear);
   #endif
