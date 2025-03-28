@@ -1,0 +1,20 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Pebble_Companion.App"
+             RequestedThemeVariant="Default">
+             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.Styles>
+        <FluentTheme />
+    </Application.Styles>
+             <Application.Resources>
+                 <TrayIcon x:Key="TrayIcon" Icon="/Assets/Discord_Pbl.png" ToolTipText="Pebble Companion">
+                     <TrayIcon.Menu>
+                         <NativeMenu>
+                             <NativeMenuItem Header="Show" />
+                             <NativeMenuItem Header="Exit" />
+                         </NativeMenu>
+                     </TrayIcon.Menu>
+                 </TrayIcon>
+             </Application.Resources>
+</Application>

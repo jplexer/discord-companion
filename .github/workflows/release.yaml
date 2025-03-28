@@ -1,0 +1,129 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*' # Trigger on version tags
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '9.0.x'
+      
+      - name: Restore dependencies
+        run: dotnet restore desktop/desktop.sln
+      
+      - name: Build
+        run: dotnet build desktop/desktop.sln --configuration Release
+      
+      - name: Publish
+        run: dotnet publish "desktop/Pebble Companion.csproj" --configuration Release --output ./output
+      
+      - name: Create ZIP archive
+        run: Compress-Archive -Path ./output/* -DestinationPath PebbleCompanion-Windows.zip
+      
+      - name: Upload Windows Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: pebble-companion-windows
+          path: ./PebbleCompanion-Windows.zip
+          retention-days: 30
+  
+  build-appimage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '9.0.x'
+      
+      - name: Install AppImage tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libfuse2
+          wget -O appimagetool "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
+          chmod +x appimagetool
+      
+      - name: Restore dependencies
+        run: dotnet restore desktop/desktop.sln
+      
+      - name: Build
+        run: dotnet build desktop/desktop.sln --configuration Release
+      
+      - name: Publish
+        run: dotnet publish "desktop/Pebble Companion.csproj" --configuration Release --self-contained true -r linux-x64 -o ./publish
+      
+      - name: Create AppDir
+        run: |
+          mkdir -p AppDir/usr/bin
+          mkdir -p AppDir/usr/share/applications
+          mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
+          
+          # Copy app to AppDir
+          cp -r ./publish/* AppDir/usr/bin/
+          
+          # Create desktop entry
+          echo "[Desktop Entry]
+          Name=Pebble Companion
+          Exec=PebbleCompanion
+          Icon=pebble-companion
+          Type=Application
+          Categories=Utility;" > AppDir/usr/share/applications/pebble-companion.desktop
+
+          # Also symlink the desktop file to AppDir root as required by appimagetool
+          ln -sf usr/share/applications/pebble-companion.desktop AppDir/pebble-companion.desktop
+          
+          # Copy icon
+          cp desktop/Assets/Discord_Pbl.png AppDir/pebble-companion.png || echo "Icon not found, continuing without it"
+          
+          # Create AppRun
+          echo '#!/bin/sh
+          SELF=$(readlink -f "$0")
+          HERE=${SELF%/*}
+          export PATH="${HERE}/usr/bin:${PATH}"
+          export LD_LIBRARY_PATH="${HERE}/usr/lib:${LD_LIBRARY_PATH}"
+          exec "${HERE}/usr/bin/Pebble Companion" "$@"' > AppDir/AppRun
+          
+          chmod +x AppDir/AppRun
+      
+      - name: Build AppImage
+        run: |
+          ./appimagetool AppDir PebbleCompanion.AppImage
+      
+      - name: Upload AppImage
+        uses: actions/upload-artifact@v4
+        with:
+          name: pebble-companion-appimage
+          path: ./PebbleCompanion.AppImage
+          retention-days: 30
+  
+  create-release:
+    needs: [build-windows, build-appimage]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ./artifacts/pebble-companion-windows/PebbleCompanion-Windows.zip
+            ./artifacts/pebble-companion-appimage/PebbleCompanion.AppImage
+          draft: false
+          prerelease: false
+          generate_release_notes: true

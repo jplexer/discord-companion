@@ -4,49 +4,25 @@
 This README explains how to set up and run the Discord companion WebSocket server that enables control of Discord voice settings from a Pebble smartwatch application.
 
 ## Prerequisites
-
-- [Node.js](https://nodejs.org/) (version 22 or newer recommended)
 - Discord desktop application installed
 
 ## Setup Instructions
 
-### 1. Clone the repository
+### Option 1: Download from GitHub Actions
 
-```bash
-git clone https://github.com/jplexer/discord-companion
-cd discord-companion/desktop
-```
+1. Go to the [GitHub Actions](https://github.com/jplexer/discord-companion/actions) tab of this repository
+2. Select the most recent successful workflow run
+3. Download the desktop server artifact from the Artifacts section
+4. Extract the downloaded zip file
+5. Run the executable file (e.g., `DiscordCompanionServer.exe`)
 
-### 2. Install dependencies
+### Option 2: Self-compile
 
-```bash
-npm install
-```
-
-### 3. Configure environment variables
-
-Copy the example environment file and add your Discord application credentials:
-
-```bash
-cp .env.example .env
-```
-
-Edit the `.env` file and add the following:
-
-```
-DISCORD_CLIENT_ID=your_discord_application_id
-DISCORD_CLIENT_SECRET=your_discord_application_secret
-```
-
-You can get these credentials by creating a Discord application at the [Discord Developer Portal](https://discord.com/developers/applications).
-
-### 4. Run the server
-
-```bash
-node index.js
-```
-
-The server will start and display the WebSocket URL (e.g., `ws://192.168.1.100:5983`) that the Pebble app can connect to.
+1. Navigate to the `desktop` folder in this repository
+2. Open the solution file (`.sln`) in Rider or your preferred C# IDE
+3. Restore NuGet packages
+4. Build the solution
+5. Run the compiled executable from the output directory
 
 ## Troubleshooting
 

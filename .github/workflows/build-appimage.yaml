@@ -1,0 +1,81 @@
+name: Build AppImage
+
+on:
+  push:
+    paths:
+      - 'desktop/**'
+      - '.github/workflows/build-appimage.yaml'
+
+jobs:
+  build-appimage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Install AppImage tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libfuse2
+          wget -O appimagetool "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
+          chmod +x appimagetool
+          
+      - name: Restore dependencies
+        run: dotnet restore desktop/desktop.sln
+
+      - name: Build
+        run: dotnet build desktop/desktop.sln --configuration Release
+
+      - name: Publish
+        run: dotnet publish "desktop/Pebble Companion.csproj" --configuration Release --self-contained true -r linux-x64 -o ./publish
+
+      - name: Create AppDir
+        run: |
+          mkdir -p AppDir/usr/bin
+          mkdir -p AppDir/usr/share/applications
+          mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
+          
+          # Copy app to AppDir
+          cp -r ./publish/* AppDir/usr/bin/
+          
+          # Create desktop entry
+          echo "[Desktop Entry]
+          Name=Pebble Companion
+          Exec=PebbleCompanion
+          Icon=pebble-companion
+          Type=Application
+          Categories=Utility;" > AppDir/usr/share/applications/pebble-companion.desktop
+
+          # Also symlink the desktop file to AppDir root as required by appimagetool
+          ln -sf usr/share/applications/pebble-companion.desktop AppDir/pebble-companion.desktop
+          
+          # Copy icon (adjust path if your icon is elsewhere)
+          # For now using a placeholder command - replace with actual icon path
+          cp desktop/Assets/Discord_Pbl.png AppDir/pebble-companion.png || echo "Icon not found, continuing without it"
+          
+          # Create AppRun
+          echo '#!/bin/sh
+          SELF=$(readlink -f "$0")
+          HERE=${SELF%/*}
+          export PATH="${HERE}/usr/bin:${PATH}"
+          export LD_LIBRARY_PATH="${HERE}/usr/lib:${LD_LIBRARY_PATH}"
+          exec "${HERE}/usr/bin/Pebble Companion" "$@"' > AppDir/AppRun
+          
+          chmod +x AppDir/AppRun
+
+      - name: Build AppImage
+        run: |
+          ./appimagetool AppDir PebbleCompanion.AppImage
+
+      - name: Upload AppImage
+        uses: actions/upload-artifact@v4
+        with:
+          name: pebble-companion-appimage
+          path: ./PebbleCompanion.AppImage
+          retention-days: 30
