@@ -17,6 +17,7 @@ Pebble.addEventListener("ready",
         console.log("Watch Model: " + watchInfo.model);
         if (watchInfo.model.startsWith("qemu")) {
             console.log("Running in emulator, skipping WebSocket initialization");
+            sendConnectionStatus(true);
             sendStateToPebble({
                 VOICE_CHANNEL_NAME: "Fake Channel and some more characters",
                 VOICE_USER_COUNT: 42,

@@ -54,6 +54,11 @@
         },
         {
           "type": "raw",
+          "name": "DISCORD_80",
+          "file": "images/80px_discord.pdc"
+        },
+        {
+          "type": "raw",
           "name": "STATUS_MUTED",
           "file": "images/status_muted.pdc"
         },
@@ -66,6 +71,11 @@
           "type": "raw",
           "name": "QUESTION_MARK",
           "file": "images/question_mark.pdc"
+        },
+        {
+          "type": "raw",
+          "name": "ICON_WARNING",
+          "file": "images/warning.pdc"
         },
         {
           "type": "png",
