@@ -189,6 +189,7 @@ static void show_leave_confirmation(void) {
 // ---------------------- APP GLANCE ----------------------
 
 static void prv_update_app_glance(AppGlanceReloadSession *session, size_t limit, void *context) {
+  return; // Disable AppGlance for now
   const AppGlanceSlice slice = {
     .layout = {
       .icon = APP_GLANCE_SLICE_DEFAULT_ICON,
