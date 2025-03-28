@@ -467,7 +467,7 @@ static void create_discord_logo(Layer *window_layer, GRect bounds) {
   
   GRect discord_frame;
   #if PBL_ROUND
-    discord_frame = GRect(bounds.size.w - ACTION_BAR_WIDTH - 14 - 50, bounds.size.h - 50 - 6, 50, 50);
+    discord_frame = GRect(bounds.size.w - ACTION_BAR_WIDTH - 14 - 50, bounds.size.h - 50 - 4, 50, 50);
   #else
     discord_frame = GRect(8, bounds.size.h - 53, 50, 50);
   #endif
