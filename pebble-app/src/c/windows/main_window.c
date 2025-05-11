@@ -386,14 +386,14 @@ static void create_text_layers(Layer *window_layer, GRect bounds, int status_bar
   GTextAlignment text_alignment;
   
   #if PBL_ROUND
-    available_width = bounds.size.w - ACTION_BAR_WIDTH - 24;
-    x_offset = 12;
-    y_offset = status_bar_height + 10;
+    available_width = bounds.size.w - ACTION_BAR_WIDTH - ROUND_ACTION_BAR_GUTTER;
+    x_offset = 0;
+    y_offset = status_bar_height + MARGIN_ABOVE_BELOW_TEXT;
     text_alignment = GTextAlignmentRight;
   #else
-    available_width = bounds.size.w - ACTION_BAR_WIDTH - 8;
-    x_offset = 4;
-    y_offset = status_bar_height + 5;
+    available_width = bounds.size.w - ACTION_BAR_WIDTH - (HORIZONTAL_GUTTERS * 2);
+    x_offset = HORIZONTAL_GUTTERS;
+    y_offset = status_bar_height + MARGIN_ABOVE_BELOW_TEXT;
     text_alignment = GTextAlignmentLeft;
   #endif
   
@@ -406,6 +406,10 @@ static void create_text_layers(Layer *window_layer, GRect bounds, int status_bar
   text_layer_set_text_color(s_server_name_layer, FOREGROUND_COLOR);
   text_layer_set_background_color(s_server_name_layer, GColorClear);
   layer_add_child(window_layer, text_layer_get_layer(s_server_name_layer));
+
+  #if PBL_ROUND
+    text_layer_enable_screen_text_flow_and_paging(s_server_name_layer, HORIZONTAL_GUTTERS);
+  #endif
   
   // 2. Channel name layer
   y_offset += 20;
@@ -423,6 +427,10 @@ static void create_text_layers(Layer *window_layer, GRect bounds, int status_bar
   text_layer_set_text_color(s_channel_name_layer, FOREGROUND_COLOR);
   text_layer_set_background_color(s_channel_name_layer, GColorClear);
   layer_add_child(window_layer, text_layer_get_layer(s_channel_name_layer));
+
+  #if PBL_ROUND
+    text_layer_enable_screen_text_flow_and_paging(s_channel_name_layer, HORIZONTAL_GUTTERS);
+  #endif
   
   // 3. User count layer
   #if PBL_ROUND
@@ -437,6 +445,10 @@ static void create_text_layers(Layer *window_layer, GRect bounds, int status_bar
   text_layer_set_text_color(s_user_count_layer, FOREGROUND_COLOR);
   text_layer_set_background_color(s_user_count_layer, GColorClear);
   layer_add_child(window_layer, text_layer_get_layer(s_user_count_layer));
+
+  #if PBL_ROUND
+    text_layer_enable_screen_text_flow_and_paging(s_user_count_layer, HORIZONTAL_GUTTERS);
+  #endif
 }
 
 static void create_action_bar(Window *window) {
@@ -459,9 +471,9 @@ static void create_discord_logo(Layer *window_layer, GRect bounds) {
   
   GRect discord_frame;
   #if PBL_ROUND
-    discord_frame = GRect(bounds.size.w - ACTION_BAR_WIDTH - 14 - 50, bounds.size.h - 50 - 4, 50, 50);
+    discord_frame = GRect(bounds.size.w - ACTION_BAR_WIDTH - ROUND_ACTION_BAR_GUTTER - 50, bounds.size.h - MARGIN_BELOW_ICON - 50, 50, 50);
   #else
-    discord_frame = GRect(8, bounds.size.h - 53, 50, 50);
+    discord_frame = GRect(HORIZONTAL_GUTTERS, bounds.size.h - MARGIN_BELOW_ICON - 50, 50, 50);
   #endif
   
   s_discord_layer = layer_create(discord_frame);
