@@ -1,5 +1,6 @@
 #include "main_window.h"
 #include "../modules/app_message.h"
+#include "../util/style.h"
 #include <pebble.h>
 
 // ---------------------- DECLARATIONS ----------------------
@@ -132,11 +133,8 @@ static void confirm_window_load(Window *window) {
   text_layer_set_text(s_confirm_text_layer, "Leave voice channel?");
   text_layer_set_text_alignment(s_confirm_text_layer, GTextAlignmentCenter);
   text_layer_set_font(s_confirm_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
-  
-  #if PBL_COLOR
-    text_layer_set_text_color(s_confirm_text_layer, GColorWhite);
-    text_layer_set_background_color(s_confirm_text_layer, GColorClear);
-  #endif
+  text_layer_set_text_color(s_confirm_text_layer, FOREGROUND_COLOR);
+  text_layer_set_background_color(s_confirm_text_layer, GColorClear);
 
   #if PBL_ROUND
     text_layer_set_text_alignment(s_confirm_text_layer, GTextAlignmentRight);
@@ -405,10 +403,8 @@ static void create_text_layers(Layer *window_layer, GRect bounds, int status_bar
   text_layer_set_font(s_server_name_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
   text_layer_set_text(s_server_name_layer, "");
   text_layer_set_overflow_mode(s_server_name_layer, GTextOverflowModeFill);
-  #if PBL_COLOR
-    text_layer_set_text_color(s_server_name_layer, GColorWhite);
-    text_layer_set_background_color(s_server_name_layer, GColorClear);
-  #endif
+  text_layer_set_text_color(s_server_name_layer, FOREGROUND_COLOR);
+  text_layer_set_background_color(s_server_name_layer, GColorClear);
   layer_add_child(window_layer, text_layer_get_layer(s_server_name_layer));
   
   // 2. Channel name layer
@@ -424,10 +420,8 @@ static void create_text_layers(Layer *window_layer, GRect bounds, int status_bar
   text_layer_set_text(s_channel_name_layer, "");
   text_layer_set_overflow_mode(s_channel_name_layer, GTextOverflowModeTrailingEllipsis);
   text_layer_set_size(s_channel_name_layer, GSize(available_width, 60));
-  #if PBL_COLOR
-    text_layer_set_text_color(s_channel_name_layer, GColorWhite);
-    text_layer_set_background_color(s_channel_name_layer, GColorClear);
-  #endif
+  text_layer_set_text_color(s_channel_name_layer, FOREGROUND_COLOR);
+  text_layer_set_background_color(s_channel_name_layer, GColorClear);
   layer_add_child(window_layer, text_layer_get_layer(s_channel_name_layer));
   
   // 3. User count layer
@@ -440,10 +434,8 @@ static void create_text_layers(Layer *window_layer, GRect bounds, int status_bar
   text_layer_set_text_alignment(s_user_count_layer, text_alignment);
   text_layer_set_font(s_user_count_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18));
   text_layer_set_text(s_user_count_layer, "");
-  #if PBL_COLOR
-    text_layer_set_text_color(s_user_count_layer, GColorWhite);
-    text_layer_set_background_color(s_user_count_layer, GColorClear);
-  #endif
+  text_layer_set_text_color(s_user_count_layer, FOREGROUND_COLOR);
+  text_layer_set_background_color(s_user_count_layer, GColorClear);
   layer_add_child(window_layer, text_layer_get_layer(s_user_count_layer));
 }
 
@@ -481,17 +473,11 @@ static void window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
 
-  #if PBL_COLOR
-    window_set_background_color(window, GColorIndigo);
-  #endif
+  window_set_background_color(window, BACKGROUND_COLOR);
   
   // Create status bar
   s_status_bar = status_bar_layer_create();
-  #if PBL_COLOR
-    status_bar_layer_set_colors(s_status_bar, GColorIndigo, GColorWhite);
-  #else
-    status_bar_layer_set_colors(s_status_bar, GColorWhite, GColorBlack);
-  #endif
+  status_bar_layer_set_colors(s_status_bar, BACKGROUND_COLOR, FOREGROUND_COLOR);
   status_bar_layer_set_separator_mode(s_status_bar, StatusBarLayerSeparatorModeNone);
   #if defined(PBL_RECT)
     // Move statusbar over to make room for action bar
