@@ -101,11 +101,19 @@ static void confirm_icon_layer_update_proc(Layer *layer, GContext *ctx) {
   
   // Calculate position to center the icon in the layer
   GSize icon_size = gdraw_command_image_get_bounds_size(s_confirm_icon);
+  GPoint draw_point;
   GPoint center = GPoint(bounds.size.w / 2, bounds.size.h / 2);
-  GPoint draw_point = GPoint(
-    center.x - icon_size.w / 2,
-    center.y - icon_size.h / 2
-  );
+  #if defined(PBL_ROUND) // Draw right-aligned on round
+    draw_point = GPoint(
+      bounds.size.w - icon_size.w,
+      center.y - icon_size.h / 2
+    );
+  #else // Draw centered on everything else
+    draw_point = GPoint(
+      center.x - icon_size.w / 2,
+      center.y - icon_size.h / 2
+    );
+  #endif
   
   // Draw the PDC vector image centered in the layer
   gdraw_command_image_draw(ctx, s_confirm_icon, draw_point);
@@ -117,19 +125,21 @@ static void confirm_window_load(Window *window) {
   
   // Calculate available width (account for action bar)
   int available_width = bounds.size.w - ACTION_BAR_WIDTH;
+
+  #if defined(PBL_ROUND) // Use round-specific inset
+    available_width = available_width - HORIZONTAL_GUTTERS - ROUND_ACTION_BAR_GUTTER;
+  #else
+    available_width = available_width - (HORIZONTAL_GUTTERS * 2);
+  #endif
   
   // Create question mark icon layer (centered horizontally)
   s_confirm_icon = gdraw_command_image_create_with_resource(RESOURCE_ID_QUESTION_MARK);
-  #if PBL_COLOR
-    s_confirm_icon_layer = layer_create(GRect(15, 20, available_width, 80));
-  #else
-    s_confirm_icon_layer = layer_create(GRect(0, 10, available_width, 80));
-  #endif
+  s_confirm_icon_layer = layer_create(GRect(HORIZONTAL_GUTTERS, 20, available_width, 80));
   layer_set_update_proc(s_confirm_icon_layer, confirm_icon_layer_update_proc);
   layer_add_child(window_layer, s_confirm_icon_layer);
   
   // Create text layer for confirmation message (below the icon)
-  s_confirm_text_layer = text_layer_create(GRect(10, 100, available_width - 20, 50));
+  s_confirm_text_layer = text_layer_create(GRect(HORIZONTAL_GUTTERS, 100, available_width, 50));
   text_layer_set_text(s_confirm_text_layer, "Leave voice channel?");
   text_layer_set_text_alignment(s_confirm_text_layer, GTextAlignmentCenter);
   text_layer_set_font(s_confirm_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
