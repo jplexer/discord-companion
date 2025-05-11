@@ -392,18 +392,17 @@ static void update_action_bar_icons(void) {
 
 static void create_text_layers(Layer *window_layer, GRect bounds, int status_bar_height) {
   // Calculate available width and position based on screen shape
-  int available_width, x_offset, y_offset;
+  int available_width, x_offset;
+  int y_offset = status_bar_height + MARGIN_ABOVE_BELOW_TEXT;
   GTextAlignment text_alignment;
   
   #if PBL_ROUND
     available_width = bounds.size.w - ACTION_BAR_WIDTH - ROUND_ACTION_BAR_GUTTER;
     x_offset = 0;
-    y_offset = status_bar_height + MARGIN_ABOVE_BELOW_TEXT;
     text_alignment = GTextAlignmentRight;
   #else
     available_width = bounds.size.w - ACTION_BAR_WIDTH - (HORIZONTAL_GUTTERS * 2);
     x_offset = HORIZONTAL_GUTTERS;
-    y_offset = status_bar_height + MARGIN_ABOVE_BELOW_TEXT;
     text_alignment = GTextAlignmentLeft;
   #endif
   
