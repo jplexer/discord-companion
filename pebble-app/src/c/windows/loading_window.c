@@ -1,4 +1,5 @@
 #include "loading_window.h"
+#include "../util/style.h"
 
 static Window *s_window;
 static TextLayer *s_loading_text_layer;
@@ -44,9 +45,7 @@ static void window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
 
-  #if PBL_COLOR
-    window_set_background_color(window, GColorIndigo);
-  #endif
+  window_set_background_color(window, BACKGROUND_COLOR);
 
   // Create loading text layer
   s_loading_text_layer = text_layer_create(GRect(0, bounds.size.h/2 - 20, bounds.size.w, 40));
@@ -54,10 +53,8 @@ static void window_load(Window *window) {
   text_layer_set_font(s_loading_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
   text_layer_set_text(s_loading_text_layer, s_loading_text);
   
-  #if PBL_COLOR
-    text_layer_set_text_color(s_loading_text_layer, GColorWhite);
-    text_layer_set_background_color(s_loading_text_layer, GColorClear);
-  #endif
+  text_layer_set_text_color(s_loading_text_layer, FOREGROUND_COLOR);
+  text_layer_set_background_color(s_loading_text_layer, GColorClear);
   
   layer_add_child(window_layer, text_layer_get_layer(s_loading_text_layer));
   

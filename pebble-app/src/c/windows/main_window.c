@@ -1,5 +1,6 @@
 #include "main_window.h"
 #include "../modules/app_message.h"
+#include "../util/style.h"
 #include <pebble.h>
 
 // ---------------------- DECLARATIONS ----------------------
@@ -100,11 +101,19 @@ static void confirm_icon_layer_update_proc(Layer *layer, GContext *ctx) {
   
   // Calculate position to center the icon in the layer
   GSize icon_size = gdraw_command_image_get_bounds_size(s_confirm_icon);
+  GPoint draw_point;
   GPoint center = GPoint(bounds.size.w / 2, bounds.size.h / 2);
-  GPoint draw_point = GPoint(
-    center.x - icon_size.w / 2,
-    center.y - icon_size.h / 2
-  );
+  #if defined(PBL_ROUND) // Draw right-aligned on round
+    draw_point = GPoint(
+      bounds.size.w - icon_size.w,
+      center.y - icon_size.h / 2
+    );
+  #else // Draw centered on everything else
+    draw_point = GPoint(
+      center.x - icon_size.w / 2,
+      center.y - icon_size.h / 2
+    );
+  #endif
   
   // Draw the PDC vector image centered in the layer
   gdraw_command_image_draw(ctx, s_confirm_icon, draw_point);
@@ -116,27 +125,26 @@ static void confirm_window_load(Window *window) {
   
   // Calculate available width (account for action bar)
   int available_width = bounds.size.w - ACTION_BAR_WIDTH;
+
+  #if defined(PBL_ROUND) // Use round-specific inset
+    available_width = available_width - HORIZONTAL_GUTTERS - ROUND_ACTION_BAR_GUTTER;
+  #else
+    available_width = available_width - (HORIZONTAL_GUTTERS * 2);
+  #endif
   
   // Create question mark icon layer (centered horizontally)
   s_confirm_icon = gdraw_command_image_create_with_resource(RESOURCE_ID_QUESTION_MARK);
-  #if PBL_COLOR
-    s_confirm_icon_layer = layer_create(GRect(15, 20, available_width, 80));
-  #else
-    s_confirm_icon_layer = layer_create(GRect(0, 10, available_width, 80));
-  #endif
+  s_confirm_icon_layer = layer_create(GRect(HORIZONTAL_GUTTERS, 20, available_width, 80));
   layer_set_update_proc(s_confirm_icon_layer, confirm_icon_layer_update_proc);
   layer_add_child(window_layer, s_confirm_icon_layer);
   
   // Create text layer for confirmation message (below the icon)
-  s_confirm_text_layer = text_layer_create(GRect(10, 100, available_width - 20, 50));
+  s_confirm_text_layer = text_layer_create(GRect(HORIZONTAL_GUTTERS, 100, available_width, 50));
   text_layer_set_text(s_confirm_text_layer, "Leave voice channel?");
   text_layer_set_text_alignment(s_confirm_text_layer, GTextAlignmentCenter);
   text_layer_set_font(s_confirm_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
-  
-  #if PBL_COLOR
-    text_layer_set_text_color(s_confirm_text_layer, GColorWhite);
-    text_layer_set_background_color(s_confirm_text_layer, GColorClear);
-  #endif
+  text_layer_set_text_color(s_confirm_text_layer, FOREGROUND_COLOR);
+  text_layer_set_background_color(s_confirm_text_layer, GColorClear);
 
   #if PBL_ROUND
     text_layer_set_text_alignment(s_confirm_text_layer, GTextAlignmentRight);
@@ -384,18 +392,17 @@ static void update_action_bar_icons(void) {
 
 static void create_text_layers(Layer *window_layer, GRect bounds, int status_bar_height) {
   // Calculate available width and position based on screen shape
-  int available_width, x_offset, y_offset;
+  int available_width, x_offset;
+  int y_offset = status_bar_height + MARGIN_ABOVE_BELOW_TEXT;
   GTextAlignment text_alignment;
   
   #if PBL_ROUND
-    available_width = bounds.size.w - ACTION_BAR_WIDTH - 24;
-    x_offset = 12;
-    y_offset = status_bar_height + 10;
+    available_width = bounds.size.w - ACTION_BAR_WIDTH - ROUND_ACTION_BAR_GUTTER;
+    x_offset = 0;
     text_alignment = GTextAlignmentRight;
   #else
-    available_width = bounds.size.w - ACTION_BAR_WIDTH - 8;
-    x_offset = 4;
-    y_offset = status_bar_height + 5;
+    available_width = bounds.size.w - ACTION_BAR_WIDTH - (HORIZONTAL_GUTTERS * 2);
+    x_offset = HORIZONTAL_GUTTERS;
     text_alignment = GTextAlignmentLeft;
   #endif
   
@@ -405,11 +412,13 @@ static void create_text_layers(Layer *window_layer, GRect bounds, int status_bar
   text_layer_set_font(s_server_name_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
   text_layer_set_text(s_server_name_layer, "");
   text_layer_set_overflow_mode(s_server_name_layer, GTextOverflowModeFill);
-  #if PBL_COLOR
-    text_layer_set_text_color(s_server_name_layer, GColorWhite);
-    text_layer_set_background_color(s_server_name_layer, GColorClear);
-  #endif
+  text_layer_set_text_color(s_server_name_layer, FOREGROUND_COLOR);
+  text_layer_set_background_color(s_server_name_layer, GColorClear);
   layer_add_child(window_layer, text_layer_get_layer(s_server_name_layer));
+
+  #if PBL_ROUND
+    text_layer_enable_screen_text_flow_and_paging(s_server_name_layer, HORIZONTAL_GUTTERS);
+  #endif
   
   // 2. Channel name layer
   y_offset += 20;
@@ -424,11 +433,13 @@ static void create_text_layers(Layer *window_layer, GRect bounds, int status_bar
   text_layer_set_text(s_channel_name_layer, "");
   text_layer_set_overflow_mode(s_channel_name_layer, GTextOverflowModeTrailingEllipsis);
   text_layer_set_size(s_channel_name_layer, GSize(available_width, 60));
-  #if PBL_COLOR
-    text_layer_set_text_color(s_channel_name_layer, GColorWhite);
-    text_layer_set_background_color(s_channel_name_layer, GColorClear);
-  #endif
+  text_layer_set_text_color(s_channel_name_layer, FOREGROUND_COLOR);
+  text_layer_set_background_color(s_channel_name_layer, GColorClear);
   layer_add_child(window_layer, text_layer_get_layer(s_channel_name_layer));
+
+  #if PBL_ROUND
+    text_layer_enable_screen_text_flow_and_paging(s_channel_name_layer, HORIZONTAL_GUTTERS);
+  #endif
   
   // 3. User count layer
   #if PBL_ROUND
@@ -440,11 +451,13 @@ static void create_text_layers(Layer *window_layer, GRect bounds, int status_bar
   text_layer_set_text_alignment(s_user_count_layer, text_alignment);
   text_layer_set_font(s_user_count_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18));
   text_layer_set_text(s_user_count_layer, "");
-  #if PBL_COLOR
-    text_layer_set_text_color(s_user_count_layer, GColorWhite);
-    text_layer_set_background_color(s_user_count_layer, GColorClear);
-  #endif
+  text_layer_set_text_color(s_user_count_layer, FOREGROUND_COLOR);
+  text_layer_set_background_color(s_user_count_layer, GColorClear);
   layer_add_child(window_layer, text_layer_get_layer(s_user_count_layer));
+
+  #if PBL_ROUND
+    text_layer_enable_screen_text_flow_and_paging(s_user_count_layer, HORIZONTAL_GUTTERS);
+  #endif
 }
 
 static void create_action_bar(Window *window) {
@@ -467,9 +480,9 @@ static void create_discord_logo(Layer *window_layer, GRect bounds) {
   
   GRect discord_frame;
   #if PBL_ROUND
-    discord_frame = GRect(bounds.size.w - ACTION_BAR_WIDTH - 14 - 50, bounds.size.h - 50 - 4, 50, 50);
+    discord_frame = GRect(bounds.size.w - ACTION_BAR_WIDTH - ROUND_ACTION_BAR_GUTTER - 50, bounds.size.h - MARGIN_BELOW_ICON - 50, 50, 50);
   #else
-    discord_frame = GRect(8, bounds.size.h - 53, 50, 50);
+    discord_frame = GRect(HORIZONTAL_GUTTERS, bounds.size.h - MARGIN_BELOW_ICON - 50, 50, 50);
   #endif
   
   s_discord_layer = layer_create(discord_frame);
@@ -481,17 +494,11 @@ static void window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
 
-  #if PBL_COLOR
-    window_set_background_color(window, GColorIndigo);
-  #endif
+  window_set_background_color(window, BACKGROUND_COLOR);
   
   // Create status bar
   s_status_bar = status_bar_layer_create();
-  #if PBL_COLOR
-    status_bar_layer_set_colors(s_status_bar, GColorIndigo, GColorWhite);
-  #else
-    status_bar_layer_set_colors(s_status_bar, GColorWhite, GColorBlack);
-  #endif
+  status_bar_layer_set_colors(s_status_bar, BACKGROUND_COLOR, FOREGROUND_COLOR);
   status_bar_layer_set_separator_mode(s_status_bar, StatusBarLayerSeparatorModeNone);
   #if defined(PBL_RECT)
     // Move statusbar over to make room for action bar
